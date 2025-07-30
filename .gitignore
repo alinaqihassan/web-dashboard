@@ -1,6 +1,6 @@
 node_modules/
 .env
-data/prayerTimes.json
+data/namaazTimes.json
 data/moods.json
 data/*.cache.json
 frontend/node_modules/
