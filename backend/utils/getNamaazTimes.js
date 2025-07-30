@@ -35,9 +35,9 @@ async function fetchFromAladhan(dateStr) {
   return selectedTimings(json.data.timings);
 }
 
-async function getNamaazTimes(dateStr) {
+async function getNamaazTimes(dateStr, force=false) {
   const cache = loadCache();
-  if (cache[dateStr]) return cache[dateStr];
+  if (cache[dateStr] && !force) return cache[dateStr];
 
   const timings = await fetchFromAladhan(dateStr);
   cache[dateStr] = timings;
