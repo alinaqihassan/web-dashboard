@@ -1,28 +1,35 @@
-require('dotenv').config({ quiet: true });
+const fs = require('fs');
+const path = require('path');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const qiblahPath = path.join(__dirname, '../../data/qiblahDirection.json');
 
-async function getQiblahDirection() {
-  const lat = process.env.LAT;
-  const lon = process.env.LON;
+function loadCache() {
+  if (!fs.existsSync(qiblahPath)) return {};
+  return JSON.parse(fs.readFileSync(qiblahPath, 'utf-8'));
+}
 
-  if (!lat || !lon) throw new Error('LAT and LON must be set in .env');
+function saveCache(cache) {
+  fs.writeFileSync(qiblahPath, JSON.stringify(cache, null, 2));
+}
 
-  const url = `https://api.aladhan.com/v1/qibla/${lat}/${lon}`;
+async function fetchFromAladhan(lat, lon) {
+  const baseUrl = 'https://api.aladhan.com/v1/qibla'
+  const url = `${baseUrl}/${lat}/${lon}`;
   const res = await fetch(url);
 
-  if (!res.ok) throw new Error(`Failed to fetch Qiblah direction: ${res.statusText}`);
-
-  const data = await res.json();
-  return {
-    latitude: data.data.latitude,
-    longitude: data.data.longitude,
-    direction: parseFloat(data.data.direction.toFixed(2)) // Clean bearing
-  };
+  if (!res.ok) throw new Error(`Aladhan API error: ${res.status}`);
+  const json = await res.json();
+  return {direction: parseFloat(json.data.direction.toFixed(2))}; // rounded to 2 decimal places
 }
+
+async function getQiblahDirection(lat, lon, force=false) {
+  const cache = loadCache();
+  if (cache["qiblah"] && !force) return cache["qiblah"];
+
+  const direction = await fetchFromAladhan(lat, lon);
+  cache["qiblah"] = direction;
+  saveCache(cache);
+  return direction;
+} 
 
 module.exports = getQiblahDirection;
-
-// Optional test
-if (require.main === module) {
-  getQiblahDirection().then(console.log).catch(console.error);
-}
