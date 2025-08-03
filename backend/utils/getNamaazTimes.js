@@ -31,11 +31,12 @@ async function fetchFromAladhan(lat, lon, dateStr) {
 }
 
 async function getNamaazTimes(lat, lon, dateStr, force=false) {
+  const key = `${dateStr},${lat},${lon}`;
   const cache = loadCache();
-  if (cache[dateStr] && !force) return cache[dateStr];
+  if (cache[key] && !force) return cache[key];
 
   const timings = await fetchFromAladhan(lat, lon, dateStr);
-  cache[dateStr] = timings;
+  cache[key] = timings;
   saveCache(cache);
   return timings;
 }

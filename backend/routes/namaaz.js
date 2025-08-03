@@ -12,6 +12,7 @@ router.get('/', async (req, res) => {
   const force = (req.query.force === 'true');
 
   if (!lat || !lon) throw new Error('LAT and LON must be set in .env');
+  if (isNaN(lat) || isNaN(lon)) throw new Error('Invalid LAT or LON format');
   
   try {
     const timings = await getNamaazTimes(lat, lon, dateStr, force);

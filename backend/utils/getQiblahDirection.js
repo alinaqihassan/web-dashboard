@@ -23,11 +23,12 @@ async function fetchFromAladhan(lat, lon) {
 }
 
 async function getQiblahDirection(lat, lon, force=false) {
+  const key = `${lat},${lon}`;
   const cache = loadCache();
-  if (cache["qiblah"] && !force) return cache["qiblah"];
+  if (cache[key] && !force) return cache[key];
 
   const direction = await fetchFromAladhan(lat, lon);
-  cache["qiblah"] = direction;
+  cache[key] = direction;
   saveCache(cache);
   return direction;
 } 
