@@ -36,11 +36,27 @@ async function fetchWeather() {
     45: "Fog",
     48: "Depositing rime fog",
     51: "Light drizzle",
+    53: "Moderate drizzle",
+    55: "Dense drizzle",
+    56: "Light freezing drizzle",
+    57: "Dense freezing drizzle",
     61: "Light rain",
-    71: "Light snow",
-    80: "Rain showers",
-    95: "Thunderstorm",
-    // ... add more as needed
+    63: "Moderate rain",
+    65: "Heavy rain",
+    66: "Light freezing rain",
+    67: "Heavy freezing rain",
+    71: "Light snowfall",
+    73: "Moderate snowfall",
+    75: "Heavy snowfall",
+    77: "Snow grains",
+    80: "Slight rain showers",
+    81: "Moderate rain showers",
+    82: "Violent rain showers",
+    85: "Slight snow showers",
+    86: "Heavy snow showers",
+    95: "Slight to moderate thunderstorm",
+    96: "Thunderstorm with slight hail",
+    99: "Thunderstorm with heavy hail"
   };
   const desc = codeMap[data.code] || "Unknown";
   document.getElementById("weather-output").innerHTML = `
@@ -50,21 +66,48 @@ async function fetchWeather() {
   `;
 }
 
-async function updateClock() {
+async function fetchHijriDate() {
+  let hijriStr = 'N/A';
+  try {
+    const res = await fetch('/api/hijri');
+    const data = await res.json();
+    const { hijriDay, hijriMonth, hijriYear } = data;
+    hijriStr = `${hijriDay} ${hijriMonth} ${hijriYear}`;
+  } catch (err) {
+    hijriStr = 'Error fetching Hijri date';
+  }
+  document.getElementById("hijri").textContent = hijriStr;
+}
+
+function scheduleMidnightHijriUpdate() {
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setHours(24, 0, 0, 0); // Midnight
+
+  const msUntilMidnight = tomorrow - now;
+
+  setTimeout(async () => {
+    await fetchHijriDate(); // refresh Hijri date
+    await fetchNamaazTimes(); // refresh Namaaz times
+    scheduleMidnightHijriUpdate(); // Schedule again
+  }, msUntilMidnight);
+}
+
+function updateClock() {
   const now = new Date();
 
-  // 🕰 Time
+  // Time
   const timeStr = now.toLocaleTimeString('en-GB', { hour12: false });
   document.getElementById('time').textContent = timeStr;
 
-  // 📅 Gregorian (Miladi)
+  // Gregorian (Mīladī)
   const weekday = now.toLocaleDateString('en-GB', { weekday: 'long' });
   const day = now.getDate();
   const month = now.toLocaleDateString('en-GB', { month: 'long' });
   const year = now.getFullYear();
   const gregorianStr = `${weekday}, ${day} ${month} ${year}`;
 
-  // ☀️ Shamsī (Solar Hijri)
+  // Solar Hijri (Shamsī)
   const shamsiFormatter = new Intl.DateTimeFormat('en-GB-u-ca-persian', {
     day: 'numeric',
     month: 'numeric',
@@ -85,28 +128,14 @@ async function updateClock() {
 
   const shamsiStr = `${shamsiMap.day} ${shamsiMonthName} ${shamsiMap.year}`;
 
-  // 🌙 Qamarī (Hijri)
-  let hijriStr = 'N/A';
-  try {
-    const res = await fetch('/api/hijri');
-    const data = await res.json();
-    const { hijriDay, hijriMonth, hijriYear } = data;
-    hijriStr = `${hijriDay} ${hijriMonth} ${hijriYear}`;
-  } catch (err) {
-    hijriStr = 'Error fetching Hijri date';
-  }
-
-  // 📜 Final string
-  const dateStr = `${gregorianStr} | ${shamsiStr} | ${hijriStr}`;
-  document.getElementById('date').textContent = dateStr;
+  document.getElementById("gregorian").textContent = gregorianStr;
+  document.getElementById("shamsi").textContent = shamsiStr;
 }
 
-
-setInterval(updateClock, 1000);
+setInterval(updateClock, 100);
 setInterval(fetchWeather, 600000)
-setInterval(fetchNamaazTimes, 60000)
-setInterval(fetchQiblahDirection, 3600000)
 
+fetchHijriDate();
 fetchWeather();
 fetchNamaazTimes();
 fetchQiblahDirection();
