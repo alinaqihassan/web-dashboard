@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
   try {
     const direction = await getQiblahDirection(lat, lon, force);
-    res.json({latitude: lat, longitude: lon, direction});
+    res.json({latitude: lat, longitude: lon, direction: direction});
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });

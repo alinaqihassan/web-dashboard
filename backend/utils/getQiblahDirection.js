@@ -19,7 +19,7 @@ async function fetchFromAladhan(lat, lon) {
 
   if (!res.ok) throw new Error(`Aladhan API error: ${res.status}`);
   const json = await res.json();
-  return {direction: parseFloat(json.data.direction.toFixed(2))}; // rounded to 2 decimal places
+  return parseFloat(json.data.direction.toFixed(2)); // rounded to 2 decimal places
 }
 
 async function getQiblahDirection(lat, lon, force=false) {

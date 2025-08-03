@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-white">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .font {
+      font-family: 'Adwaita Sans', Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body class="p-6 font space-y-6">
+
+  <section id="clock" class="bg-gray-800 p-4 rounded-lg shadow-md">
+    <p id="time" class="text-3xl font-bold mb-1"></p>
+    <p id="date" class="mt-2 text-lg text-gray-300"></p>
+  </section>
+  
+  <section id="weather" class="bg-gray-800 p-4 rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold">Weather</h2>
+    <p id="weather-output" class="mt-2 text-lg text-gray-300">Loading...</p>
+  </section>
+
+  <section id="namaaz-times" class="bg-gray-800 p-4 rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold">Namaaz Times</h2>
+    <ul id="namaaz-output" class="mt-2 text-gray-300 space-y-1"></ul>
+  </section>
+
+  <section id="qiblah-direction" class="bg-gray-800 p-4 rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold">Qiblah</h2>
+    <p id="qiblah-output" class="mt-2 text-lg text-gray-300">Loading...</p>
+  </section>
+
+  <script src="./script.js"></script>
+</body>
+</html>

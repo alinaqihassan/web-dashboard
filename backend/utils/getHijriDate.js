@@ -4,10 +4,10 @@ const { differenceInCalendarDays, parseISO } = require('date-fns');
 
 const hijriWeekdays = [
   'Yawm al-ʾAħad',
-  'Yawm al-Iþnayn',
-  'Yawm ath-Þulāthāʾ',
+  'Yawm al-Ithnayn',
+  'Yawm ath-Thulāthāʾ',
   'Yawm al-ʾArbiʿāʾ',
-  'Yawm al-Ḵamīs',
+  'Yawm al-Khamīs',
   'Yawm al-Jumʿah',
   'Yawm as-Sabt'
 ];
@@ -16,15 +16,15 @@ const hijriMonths = [
   'Muħarram',
   'Safar',
   'Rabīʿ al-ʾAwwal',
-  'Rabīʿ al-Þānī',
+  'Rabīʿ al-Thānī',
   'Jumādā al-ʾŪlā',
-  'Jumādā al-Þāniyah',
+  'Jumādā al-Thāniyah',
   'Rajab',
   'Shaʿbān',
   'Ramaḍān',
   'Shawwāl',
-  'Ðū \'l-Qaʿdah',
-  'Ðū \'l-Ħijjah'
+  'Dhū \'l-Qaʿdah',
+  'Dhū \'l-Ħijjah'
 ];
 
 function getHijriDateForGregorian(inputDateStr) {
@@ -88,7 +88,7 @@ function getHijriDateForGregorian(inputDateStr) {
     hijriMonth: monthName,
     hijriMonthNumber: month,
     hijriYear: year,
-    weekday
+    weekday: weekday
   };
 }
 
