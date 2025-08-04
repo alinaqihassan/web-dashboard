@@ -5,4 +5,4 @@ data/qiblahDirection.json
 data/moods.json
 data/*.cache.json
 frontend/node_modules/
-dist/
+data/pages/

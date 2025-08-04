@@ -132,11 +132,97 @@ function updateClock() {
   document.getElementById("shamsi").textContent = shamsiStr;
 }
 
+async function loadTasks() {
+  const list = document.getElementById('todo-list');
+  list.innerHTML = '';
+  try {
+    const res = await fetch('/api/todo/list');
+    const data = await res.json();
+    if (!data.success) throw new Error('Failed to load tasks');
+
+    data.tasks.forEach(({ id, task, done }) => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center space-x-2';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = done;
+      checkbox.addEventListener('change', async () => {
+        try {
+          await fetch('/api/todo/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, done: checkbox.checked }),
+          });
+        } catch (err) {
+          alert('Failed to update task status.');
+          checkbox.checked = !checkbox.checked; // revert on fail
+        }
+      });
+
+      const span = document.createElement('span');
+      span.textContent = task;
+
+      const delete_button = document.createElement('button');
+      delete_button.className = 'bg-red-600 rounded px-1';
+      delete_button.textContent = 'delete'
+      delete_button.addEventListener('click', async () => {
+        try {
+          await fetch('/api/todo/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id }),
+          });
+        } catch (err) {
+          alert('Failed to delete task');
+        }
+        try {
+          await loadTasks();  // Refresh the list after deleting
+        } catch (err) {
+          alert('Failed to sync with Notion.');
+          console.error(err);
+        }
+      });
+
+      li.appendChild(checkbox);
+      li.appendChild(span);
+      li.appendChild(delete_button);
+      list.appendChild(li);
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+document.getElementById('todo-add').addEventListener('click', async () => {
+  const input = document.getElementById('todo-input');
+  const task = input.value.trim();
+  if (!task) return;
+
+  try {
+    const res = await fetch('/api/todo/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ task }),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+
+    input.value = '';
+    await loadTasks();  // Refresh the list after adding
+  } catch (err) {
+    alert('Failed to sync with Notion.');
+    console.error(err);
+  }
+});
+
 setInterval(updateClock, 100);
 setInterval(fetchWeather, 600000)
+setInterval(loadTasks, 600000)
 
 fetchHijriDate();
 fetchWeather();
 fetchNamaazTimes();
 fetchQiblahDirection();
+loadTasks();
 updateClock();

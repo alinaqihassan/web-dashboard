@@ -8,6 +8,10 @@ const hijriRoute = require('./routes/hijri');
 const namaazRoute = require('./routes/namaaz');
 const qiblahRoute = require('./routes/qiblah');
 const weatherRoute = require('./routes/weather');
+const todoRoute = require('./routes/todo')
+const pagesRoute = require('./routes/pages')
+
+app.use(express.json())
 
 app.use(morgan('combined'));
 
@@ -15,6 +19,8 @@ app.use('/api/hijri', hijriRoute);
 app.use('/api/namaaz', namaazRoute);
 app.use('/api/qiblah', qiblahRoute);
 app.use('/api/weather', weatherRoute);
+app.use('/api/todo', todoRoute)
+app.use('/api/pages', pagesRoute)
 
 app.use(express.static(path.join(__dirname,'../frontend')))
 

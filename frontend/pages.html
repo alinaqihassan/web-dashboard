@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Notion-style Markdown Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+  <script>
+    tailwind.config = {
+      plugins: [tailwindTypography],
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <style>
+    .font {
+      font-family: 'Adwaita Sans', Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+    /* Custom mobile overlay for sidebar */
+    .sidebar-mobile-open {
+      transform: translateX(0);
+      transition: transform 0.3s ease;
+    }
+    .sidebar-mobile-closed {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    @media (max-width: 640px) {
+      .mobile-hide {
+        display: none !important;
+      }
+      /* Hide sidebar bar when sidebar is open */
+      #sidebarBar.sidebarbar-hide {
+        display: none !important;
+      }
+      /* Sidebar bar styles */
+      #sidebarBar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 15;
+        height: 100vh;
+        width: 55px;
+        background: rgba(51, 65, 85, 1); /* slate-700 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding-top: 0.5rem;
+      }
+      #sidebarBar button {
+        color: white;
+        font-size: 1.5rem;
+        background: none;
+        border: none;
+        padding: 0.25rem 0;
+        cursor: pointer;
+        outline: none;
+        margin-bottom: 0.5rem;
+      }
+      #sidebarBar button:active {
+        background: rgba(55,65,81,0.7);
+      }
+      /* Push main content to the right to avoid overlap with sidebarBar */
+      main {
+        margin-left: 55px;
+      }
+    }
+    @media (min-width: 641px) {
+      #sidebarBar {
+        display: none !important;
+      }
+      main {
+        margin-left: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body class="flex h-screen overflow-hidden font text-gray-800 bg-white">
+  <!-- Sidebar (responsive: overlay for mobile) -->
+  <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gray-100 border-r overflow-auto p-4 z-20 sidebar-mobile-closed sm:static sm:translate-x-0 sm:h-auto sm:block sm:w-64 sm:p-4">
+    <button onclick="createPage('New Page')" class="mb-4 w-full px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-base sm:text-lg">+ New Page</button>
+    <div id="pageTree" class="space-y-2"></div>
+  </aside>
+
+  <!-- Overlay for mobile sidebar -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-40 z-10 mobile-hide" style="display:none;" onclick="toggleSidebar(false)"></div>
+
+  <!-- Sidebar bar for mobile (vertical, docked at left) -->
+  <div id="sidebarBar" class="sm:hidden">
+    <button id="sidebarToggleBtn" aria-label="Open sidebar">
+      ☰
+    </button>
+  </div>
+
+  <!-- Main content -->
+  <main class="flex-1 p-4 sm:p-6 overflow-auto space-y-4 relative">
+    <h1 id="pageTitle" class="text-xl sm:text-2xl font-bold"></h1>
+    <button id="toggleEdit" class="px-3 py-1 bg-yellow-300 text-black rounded text-base sm:text-lg">Edit</button>
+    <div id="pageContent" class="prose max-w-none text-base sm:text-lg"></div>
+    <textarea id="editor" class="w-full h-60 sm:h-96 p-4 border rounded hidden font-mono text-sm sm:text-base"></textarea>
+    <button id="saveBtn" class="hidden mt-2 px-4 py-2 bg-green-500 text-white rounded text-base sm:text-lg">Save</button>
+  </main>
+
+  <script src="pages.js"></script>
+</body>
+</html>

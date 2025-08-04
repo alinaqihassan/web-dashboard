@@ -1,37 +1,120 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-gray-900 text-white">
+<html lang="en" class="text-white">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>My Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    html, body {
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      background-image: url('background.jpg'); /* Replace with your actual image path */
+      background-size: cover;
+      background-position: center;
+      z-index: -1;
+      pointer-events: none; /* so you can interact with elements above */
+    }
+
+    body {
+      position: relative;
+      z-index: 0;
+      background: transparent; /* Avoid conflicts */
+    }
+    
     .font {
       font-family: 'Adwaita Sans', Inter, ui-sans-serif, system-ui, sans-serif;
     }
+
+    main.masonry-columns {
+      column-gap: 1.5rem;
+      column-count: 1;
+    }
+
+    @media (min-width: 640px) {
+      main.masonry-columns {
+        column-count: 2;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      main.masonry-columns {
+        column-count: 3;
+      }
+    }
+
+    main.masonry-columns > section {
+      break-inside: avoid;
+      margin-bottom: 1.5rem;
+      background-color: rgba(100, 116, 139, 0.5); /* Slate grey with 50% opacity (Tailwind's slate-500) */
+      padding: 1rem;
+      border-radius: 0.5rem;
+      backdrop-filter: blur(2px);
+    }
   </style>
 </head>
-<body class="p-6 font space-y-6">
+<body class="p-6 font space-y-6 text-white">
 
-  <section id="clock" class="bg-gray-800 p-4 rounded-lg shadow-md">
-    <p id="time" class="text-3xl font-bold mb-1"></p>
-    <p class="mt-2 text-lg text-gray-300"><span id="gregorian">-</span> | <span id="shamsi">-</span> | <span id="hijri">-</span></p>
-  </section>
-  
-  <section id="weather" class="bg-gray-800 p-4 rounded-lg shadow-md">
-    <h2 class="text-xl font-semibold">Weather</h2>
-    <p id="weather-output" class="mt-2 text-lg text-gray-300">Loading...</p>
-  </section>
+  <!-- Top bar -->
+  <header id="clock" style="backdrop-filter: blur(2px);" class="bg-slate-500 bg-opacity-50 p-4 rounded-lg shadow-md flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+    <p id="time" class="text-3xl font-bold"></p>
+    <p class="text-lg">
+      <span id="gregorian">-</span> | 
+      <span id="shamsi">-</span> | 
+      <span id="hijri">-</span>
+    </p>
+  </header>
 
-  <section id="namaaz-times" class="bg-gray-800 p-4 rounded-lg shadow-md">
-    <h2 class="text-xl font-semibold">Namaaz Times</h2>
-    <ul id="namaaz-output" class="mt-2 text-gray-300 space-y-1"></ul>
-  </section>
+  <!-- Masonry-like multi-column container -->
+  <main class="masonry-columns font">
 
-  <section id="qiblah-direction" class="bg-gray-800 p-4 rounded-lg shadow-md">
-    <h2 class="text-xl font-semibold">Qiblah</h2>
-    <p id="qiblah-output" class="mt-2 text-lg text-gray-300">Loading...</p>
-  </section>
+    <section id="weather">
+      <h2 class="text-xl font-semibold">Weather</h2>
+      <p id="weather-output" class="mt-2 text-lg">Loading...</p>
+    </section>
+
+    <section id="namaaz-times">
+      <h2 class="text-xl font-semibold">Namaaz Times</h2>
+      <ul id="namaaz-output" class="mt-2space-y-1">
+      </ul>
+    </section>
+
+    <section id="qiblah-direction">
+      <h2 class="text-xl font-semibold">Qiblah</h2>
+      <p id="qiblah-output" class="mt-2 text-lg">Loading...</p>
+    </section>
+
+    <section id="todo">
+      <h2 class="text-xl font-semibold mb-2">To-Do List</h2>
+      <input id="todo-input" class="w-full p-2 rounded text-black mb-2" placeholder="Enter new task..." />
+      <button id="todo-add" class="mt-2 bg-blue-600 px-4 py-2 rounded">Add Task</button>
+      <ul id="todo-list" class="mt-4 space-y-1"></ul>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold mb-2">Quick Links</h2>
+      <a href="pages.html" target="_blank" rel="noopener noreferrer"
+        class="inline-block px-6 py-3 mb-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200">
+        Open Pages
+      </a><br/>
+      <a href="https://notion.so" target="_blank" rel="noopener noreferrer"
+        class="inline-block px-6 py-3 mb-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200">
+        Open Notion
+      </a>
+    </section>
+
+
+  </main>
 
   <script src="./script.js"></script>
 </body>
