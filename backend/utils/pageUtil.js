@@ -5,7 +5,20 @@ const crypto = require('crypto');
 const VAULT_DIR = path.join(__dirname, '..', '..', 'data', 'pages');
 const META_FILE = path.join(VAULT_DIR, 'metadata.json');
 
+// Ensure the pages directory and metadata file exist
+async function ensureMetaFile() {
+  await fs.mkdir(VAULT_DIR, { recursive: true });
+  try {
+    await fs.access(META_FILE);
+  } catch (err) {
+    // File does not exist; create it with an empty object
+    await fs.writeFile(META_FILE, '{}');
+  }
+}
+
+
 async function readMetadata() {
+  await ensureMetaFile();
   try {
     const data = await fs.readFile(META_FILE, 'utf-8');
     return JSON.parse(data);
@@ -15,6 +28,7 @@ async function readMetadata() {
 }
 
 async function writeMetadata(meta) {
+  await ensureMetaFile();
   await fs.writeFile(META_FILE, JSON.stringify(meta, null, 2));
 }
 
