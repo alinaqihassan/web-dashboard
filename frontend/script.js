@@ -2,12 +2,12 @@ async function fetchNamaazTimes() {
   try {
     const res = await fetch('/api/namaaz');
     const data = await res.json();
-    const ul = document.getElementById('namaaz-output');
-    ul.innerHTML = '';
+    const table = document.getElementById('namaaz-output');
+    table.innerHTML = '';
     for (const [name, time] of Object.entries(data.timings || {})) {
-      const li = document.createElement('li');
-      li.textContent = `${name}: ${time}`;
-      ul.appendChild(li);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td class="text-left pr-5"><strong>${name}:</strong></td><td class="text-right">${time}</td>`;
+      table.appendChild(tr);
     }
   } catch (err) {
     document.getElementById('namaaz-output').textContent = 'Error fetching Namaaz times';

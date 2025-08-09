@@ -10,6 +10,7 @@ const qiblahRoute = require('./routes/qiblah');
 const weatherRoute = require('./routes/weather');
 const todoRoute = require('./routes/todo')
 const pagesRoute = require('./routes/pages')
+const rssRoute = require('./routes/rss')
 
 app.use(express.json())
 
@@ -21,6 +22,7 @@ app.use('/api/qiblah', qiblahRoute);
 app.use('/api/weather', weatherRoute);
 app.use('/api/todo', todoRoute)
 app.use('/api/pages', pagesRoute)
+app.use('/rss', rssRoute)
 
 app.use(express.static(path.join(__dirname,'../frontend')))
 
